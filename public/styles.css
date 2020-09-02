@@ -24,8 +24,11 @@ html, body {
 
 body {
   font-family: 'Roboto', sans-serif;
-
   background-color: #f9f9f9;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .container {
@@ -64,22 +67,6 @@ body {
   transform: scale(1.01, 1.01);
 }
 
-.button.edit {
-  background-color: var(--secondary-color);
-}
-
-.button.delete {
-  background-color: lightgray;
-}
-
-.button.edit:hover {
-  background-color: #065ac1;
-}
-
-.button.delete:hover {
-  background-color: #df3e3e;
-}
-
 /* == HEADER == */
 header, footer {
   background-color: black;
@@ -91,59 +78,11 @@ header, footer {
   text-align: center;
 }
 
-header div.container {
-  display: grid;
-  grid-template-columns: 220px auto 280px;
-  gap: 24px;
-  align-items: center;
-}
-
-header div.container a {
-  justify-self: start;
-}
-
-/* == HEADER LOGO == */
-.logo h1 {
-  color: white;
+header h1 {
+  color: var(--primary-color);
   font-size: 36px;
   line-height: 46px;
-}
-
-.logo h2 {
-  color: var(--primary-color);
-  font-size: 14px;
-  line-height: 16px;
   letter-spacing: 2px;
-}
-
-/* == HEADER SEARCH == */
-.search input {
-  width: 100%;
-  padding: 8px 16px;
-  border-radius: 2px;
-  font-size: 16px;
-}
-
-/* == PRIMARY MENU == */
-nav.primary ul {
-  display: flex;
-  justify-content: space-between;
-}
-
-nav.primary ul li a {
-  display: flex;
-  align-items: center;
-
-  color: white;
-}
-
-nav.primary ul li a:hover {
-  color: var(--primary-color);
-  transition: 0.2s;
-}
-
-nav.primary ul li a i {
-  margin-right: 8px;
 }
 
 /* == PRODUCT FORM == */
@@ -191,10 +130,7 @@ form .item > div:nth-child(1) {
   margin-bottom: 8px;
 }
 
-form .item input[type="text"],
-form .item input[type="number"],
-form .item textarea,
-form .item select {
+form .item input {
   width: 100%;
   padding: 8px 16px;
 
@@ -206,53 +142,11 @@ form .item select {
   font-size: 16px;
 }
 
-form .item select {
-  /* allow styling in select */
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
-
-  /* Bring back the side icon */
-  background-color: white;
-
-  /* Import and configure Two images. One is for the BG e other is de arrow for click */
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'),
-    linear-gradient(to bottom, #ffffff 0%,#e5e5e5 100%);
-  background-repeat: no-repeat;
-  background-position: right .7em top 50%, 0 0;
-  background-size: .65em auto, 100%;
-}
-
-form .item textarea {
-  min-height: 150px;
-  resize: vertical;
-}
-
-form .item span {
-  padding: 8px 16px;
-  background-color: var(--primary-color);
-  border-radius: 16px;
-  color: white;
-  margin-right: 4px;
-  margin-top: 8px;
-  display: inline-block;
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 12px;
-}
-
-form .item span input[name="status"] {
-  margin-right: 2px;
-  cursor: pointer;
-}
-
-form .item .input-block,
-form .item .textarea-block {
+form .item .input-block {
   position: relative;
 }
 
-form .item .input-block:focus-within::after,
-form .item .textarea-block:focus-within::after {
+form .item .input-block:focus-within::after {
   content: "";
 
   width: 4px;
@@ -265,6 +159,7 @@ form .item .textarea-block:focus-within::after {
   bottom: 0;
 }
 
-form .item .textarea-block:focus-within::after {
-  bottom: 4px;
+/* == FOOTER == */
+footer {
+  margin: auto 0 0;
 }

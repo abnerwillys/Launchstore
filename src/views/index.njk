@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Mini Challenge - Input Mask</title>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="/">
+        <h1>Mini Challenge - Input Mask</h1>
+      </a>
+    </div>
+  </header>
+  
+  <section class="container form">
+    <form method="GET" action="/">
+
+      <div class="fields">
+        <div class="header">
+          <h3>Input Mask</h3>
+        </div>
+
+        <div class="item">
+          <div>Número %</div>
+          <div class="input-block">
+            <input 
+              type="text" 
+              name="decimal"
+              placeholder="Número decimal"
+              maxlength="13"
+              onkeydown="Mask.apply(this, 'formatPercent')"
+            >
+          </div>
+        </div>
+
+        <div class="item">
+          <div>CPF</div>
+          <div class="input-block">
+            <input 
+              type="text" 
+              name="cpf"
+              placeholder="Seu CPF"
+              maxlength="11"
+              onkeydown="Mask.apply(this, 'formatCPF')"
+            >
+          </div>
+        </div>
+      </div>
+
+      <button class="button" type="submit">Enviar</button>
+    </form>
+  </section>
+
+  <footer>© Copyright Launchstore</footer>
+
+  <script src="/scripts.js"></script>
+</body>
+</html>
