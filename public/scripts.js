@@ -71,7 +71,7 @@ const PhotosUpload = {
     return false
   },
   getAllFiles() {
-    const dataTransfer = new DataTransfer() || new ClipboardEvent("").clipboardData
+    const dataTransfer = new ClipboardEvent("").clipboardData || new DataTransfer()
 
     PhotosUpload.files.forEach(file => dataTransfer.items.add(file))
 

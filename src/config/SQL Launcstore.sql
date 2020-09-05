@@ -18,7 +18,7 @@ CREATE TABLE "categories" (
 );
 
 CREATE TABLE "files" (
-  "ind" SERIAL PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "name" text,
   "path" text NOT NULL,
   "product_id" int

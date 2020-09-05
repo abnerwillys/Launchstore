@@ -1,5 +1,4 @@
 const db = require('../../config/db')
-const { query } = require('../../config/db')
 
 module.exports = {
   create(data) {
