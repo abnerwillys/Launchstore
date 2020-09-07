@@ -30,15 +30,15 @@ const PhotosUpload = {
 
       const reader = new FileReader()
 
-      reader.readAsDataURL(file)
-
       reader.onload = () => {
         const image = new Image()
         image.src   = String(reader.result)
         
         const div = PhotosUpload.getContainer(image)
         PhotosUpload.preview.appendChild(div)        
-      }      
+      }
+
+      reader.readAsDataURL(file)
     })
 
     PhotosUpload.input.files = PhotosUpload.getAllFiles()
@@ -92,7 +92,7 @@ const PhotosUpload = {
   getRemoveButton() {
     const button = document.createElement('i')
     button.classList.add('material-icons')
-    button.innerHTML = "close"
+    button.innerHTML = "delete"
     return button
   },
   removePhoto(event) {
@@ -102,6 +102,18 @@ const PhotosUpload = {
 
     PhotosUpload.files.splice(index, 1) //splice remove an item from an array on the index informated. The second parameter is how many elements/index we'll remove starting after the index.
     PhotosUpload.input.files = PhotosUpload.getAllFiles()
+
+    photoDiv.remove()
+  },
+  removeOldPhoto(event) {
+    const photoDiv    = event.target.parentNode
+
+    if (photoDiv.id) {
+      const removedFiles = document.querySelector('input[name="removed_files"]')
+      if (removedFiles) {
+        removedFiles.value += `${photoDiv.id},`
+      }
+    }
 
     photoDiv.remove()
   }

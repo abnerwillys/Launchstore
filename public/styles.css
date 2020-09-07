@@ -327,6 +327,10 @@ form .item #photos-preview img {
   position: relative;
 }
 
+#photos-preview .photo img {
+  border-radius: 8px;
+}
+
 #photos-preview .photo i {
   position: absolute;
   top: 0;
