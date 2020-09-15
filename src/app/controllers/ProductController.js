@@ -11,131 +11,156 @@ module.exports = {
       const categories = results.rows
 
       return res.render('products/create', { categories })
+      
     }).catch(function (err) {
       throw new Error(err)
     })
   },
   async post(req, res) {
-    const keys = Object.keys(req.body)
+    try {
+      const keys = Object.keys(req.body)
 
-    for (key of keys) {
-      if (req.body[key] == "") return res.send("Please, fill all fields!")
-    }
-
-    if (req.files.length == 0) return res.send("Please, send at least one image!")
-
-    req.body.price = req.body.price.replace(/\D/g, "")//R$ 1,00 = 100
-
-    let results = await Product.create(req.body)
-    const productId = results.rows[0].id
-
-    const filesPromise = req.files.map(file => {
-      File.create({
-        filename: file.filename,
-        path: file.path.replace(/\\/g, "/" ),
-        product_id: productId
-      })
-    })
-    await Promise.all(filesPromise)
-
-    return res.redirect(`/products/${productId}/edit`)
-  },
-  async show(req, res) {
-
-    let results   = await Product.find(req.params.id)
-    const product = results.rows[0]
-    
-    if (!product) return res.send("Product Not Found!")
-
-    const { month, day, hour, minutes } = date(product.updated_at)
-
-    product.published = {
-      day: `${day}/${month}`,
-      hour: `${hour}h ${minutes}`
-    }
-
-    product.oldPrice = formatPrice(product.old_price)
-    product.price    = formatPrice(product.price)
-
-    results = await Product.files(product.id)
-    const files = results.rows.map(file => ({
-      ...file,
-      src: `${req.protocol}://${req.headers.host}${file.path.replace("public", "")}`
-    })) 
-
-    return res.render('products/show', { product, files })
-  },
-  async edit(req, res) {
-    let results = await Product.find(req.params.id)
-    const product = results.rows[0]
-
-    if(!product) return res.send("Product not found!")
-
-    product.old_price = formatPrice(product.old_price)
-    product.price = formatPrice(product.price)
-    
-    //Get categories
-    results = await Category.all()
-    const categories = results.rows
-
-    //Get images
-    results   = await Product.files(product.id)
-    let files = results.rows
-    files     = files.map(file => ({
-      ...file,
-      src: `${req.protocol}://${req.headers.host}${file.path.replace("public", "")}`
-    })) 
-
-    return res.render('products/edit', { product, categories, files })
-  },
-  async put(req, res) {
-    const keys = Object.keys(req.body)
-
-    for (key of keys) {
-      if (req.body[key] == "" && key != "removed_files") {
-        return res.send("Please, fill all fields!")
+      for (key of keys) {
+        if (req.body[key] == "") return res.send("Please, fill all fields!")
       }
-    }
 
-    if (req.body.removed_files) {
-      // 1,2,3,
-      const removedFiles = req.body.removed_files.split(",") //[1,2,3, ]
-      const lastIndex    = removedFiles.length - 1
-      removedFiles.splice(lastIndex, 1) // [1,2,3]
+      if (req.files.length == 0) return res.send("Please, send at least one image!")
 
-      const removedFilesPromise = removedFiles.map(fileId => File.delete(fileId))
+      req.body.price = req.body.price.replace(/\D/g, "")//R$ 1,00 = 100
 
-      await Promise.all(removedFilesPromise)
-    }
+      let results = await Product.create(req.body)
+      const productId = results.rows[0].id
 
-    if (req.files.length != 0) {
-      const newFilesPromise = req.files.map(file => {
+      const filesPromise = req.files.map(file => {
         File.create({
           filename: file.filename,
           path: file.path.replace(/\\/g, "/" ),
-          product_id: req.body.id
+          product_id: productId
         })
       })
+      await Promise.all(filesPromise)
 
-      await Promise.all(newFilesPromise)
+      return res.redirect(`/products/${productId}/edit`)
+      
+    } catch (error) {
+      console.error(error)
     }
+  },
+  async show(req, res) {
+    try {
+      let results   = await Product.find(req.params.id)
+      const product = results.rows[0]
+      
+      if (!product) return res.send("Product Not Found!")
 
-    req.body.price = req.body.price.replace(/\D/g, "")//R$ 1,00 = 100
+      const { month, day, hour, minutes } = date(product.updated_at)
 
-    //Update of old_price;
-    if (req.body.old_price != req.body.price) {
-      const oldProduct = await Product.find(req.body.id)
+      product.published = {
+        day: `${day}/${month}`,
+        hour: `${hour}h ${minutes}`
+      }
 
-      req.body.old_price = oldProduct.rows[0].price
+      product.oldPrice = formatPrice(product.old_price)
+      product.price    = formatPrice(product.price)
+
+      results = await Product.files(product.id)
+      const files = results.rows.map(file => ({
+        ...file,
+        src: `${req.protocol}://${req.headers.host}${file.path.replace("public", "")}`
+      })) 
+
+      return res.render('products/show', { product, files })
+      
+    } catch (error) {
+      console.error(error)
     }
+  },
+  async edit(req, res) {
+    try {
+      let results = await Product.find(req.params.id)
+      const product = results.rows[0]
 
-    await Product.update(req.body)
+      if(!product) return res.send("Product not found!")
 
-    return res.redirect(`products/${req.body.id}`)
+      product.old_price = formatPrice(product.old_price)
+      product.price = formatPrice(product.price)
+      
+      //Get categories
+      results = await Category.all()
+      const categories = results.rows
+
+      //Get images
+      results   = await Product.files(product.id)
+      let files = results.rows
+      files     = files.map(file => ({
+        ...file,
+        src: `${req.protocol}://${req.headers.host}${file.path.replace("public", "")}`
+      })) 
+
+      return res.render('products/edit', { product, categories, files })
+      
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  async put(req, res) {
+    try {
+      const keys = Object.keys(req.body)
+
+      for (key of keys) {
+        if (req.body[key] == "" && key != "removed_files") {
+          return res.send("Please, fill all fields!")
+        }
+      }
+
+      if (req.body.removed_files) {
+        // 1,2,3,
+        const removedFiles = req.body.removed_files.split(",") //[1,2,3, ]
+        const lastIndex    = removedFiles.length - 1
+        removedFiles.splice(lastIndex, 1) // [1,2,3]
+
+        const removedFilesPromise = removedFiles.map(fileId => File.delete(fileId))
+
+        await Promise.all(removedFilesPromise)
+      }
+
+      if (req.files.length != 0) {
+        const newFilesPromise = req.files.map(file => {
+          File.create({
+            filename: file.filename,
+            path: file.path.replace(/\\/g, "/" ),
+            product_id: req.body.id
+          })
+        })
+
+        await Promise.all(newFilesPromise)
+      }
+
+      req.body.price = req.body.price.replace(/\D/g, "")//R$ 1,00 = 100
+
+      //Update of old_price;
+      if (req.body.old_price != req.body.price) {
+        const oldProduct = await Product.find(req.body.id)
+
+        req.body.old_price = oldProduct.rows[0].price
+      }
+
+      await Product.update(req.body)
+
+      return res.redirect(`products/${req.body.id}`)
+
+    } catch (error) {
+      console.error(error)
+    }
   },
   async delete(req, res) {
-    await Product.delete(req.body.id)
+    try {
+      await Product.delete(req.body.id)
 
-    return res.redirect('/products/create')
+      return res.redirect('/products/create')
+
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
