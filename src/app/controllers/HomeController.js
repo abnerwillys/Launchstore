@@ -18,7 +18,7 @@ module.exports = {
       }
 
       const productsPromise = products.map(async product => {
-        product.img     = await getImage(product.id)
+        product.img      = await getImage(product.id)
         product.price    = formatPrice(product.price) 
         product.oldPrice = formatPrice(product.old_price) 
 

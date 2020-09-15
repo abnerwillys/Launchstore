@@ -8,6 +8,8 @@ const SearchController  = require('./app/controllers/SearchController')
 
 routes.get('/', HomeController.index)
 
+routes.get('/products/search', SearchController.index)
+
 routes.get('/products/create', ProductController.create)
 routes.get('/products/:id', ProductController.show)
 routes.get('/products/:id/edit', ProductController.edit)
@@ -16,8 +18,6 @@ routes.post('/products', multer.array("photos", 6), ProductController.post)
 routes.put('/products', multer.array("photos", 6), ProductController.put)
 routes.delete('/products', ProductController.delete)
 
-
-routes.get('products/search', SearchController.index)
 
 // Alias
 routes.get('/ads/create', (req, res) => {
