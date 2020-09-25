@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
-
 :root {
   --primary-color: #fd951f;
   --primary-color-hover: #d7780b;
@@ -11,6 +9,8 @@
   --color-subtitle: #777777;
   --color-border-light: #efefef;
   --color-border-in-white: #eee;
+  --color-negativeOrDanger: #e74c3c;
+  --color-positiveOrSuccess: #18a00c;
 }
 
 * {
@@ -89,7 +89,7 @@ footer {
 }
 
 .button.delete:hover {
-  background-color: #df3e3e;
+  background-color: var(--color-negativeOrDanger);
 }
 
 /* == HEADER == */
@@ -203,6 +203,7 @@ form .item > div:nth-child(1) {
   margin-bottom: 8px;
 }
 
+form .item .input-block input,
 form .item input[type="text"],
 form .item input[type="number"],
 form .item textarea,
@@ -275,6 +276,10 @@ form .item .textarea-block:focus-within::after {
   top: 0;
   left: 0;
   bottom: 0;
+}
+
+form .item .with-error.input-block:focus-within::after {
+  bottom: 27.5px;
 }
 
 form .item .textarea-block:focus-within::after {
@@ -628,4 +633,30 @@ form .item #photos-preview img {
   font-weight: bold;
 
   transition: 0.2s;
+}
+
+
+/* == USER REGISTER == */
+.user-register.container.form {
+  max-width: 500px;
+}
+
+/* == ERROR VALIDATE ERRORS == */
+.input-block .error {
+  background-color: var(--color-negativeOrDanger);
+  padding: 4px 16px;
+  border-radius: 4px;
+  color: white;
+
+  animation: rayka 200ms ease; 
+}
+
+@keyframes rayka {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+  }
 }
