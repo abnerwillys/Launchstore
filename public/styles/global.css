@@ -217,6 +217,8 @@ form .item select {
 
   outline: none;
   font-size: 16px;
+
+  text-transform: capitalize;
 }
 
 form .item select {
@@ -626,6 +628,8 @@ form .item #photos-preview img {
 
 .search-products nav ul li a {
   color: var(--color-subtitle);
+
+  text-transform: capitalize;
 }
 
 .search-products nav ul li a:hover {

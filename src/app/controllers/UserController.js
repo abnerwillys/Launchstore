@@ -25,8 +25,8 @@ module.exports = {
       let { name, email, cpf_cnpj, cep, address } = req.body;
       const { user } = req;
 
-      cpf_cnpj = cpf_cnpj.replace(/\D/g, '')
-      cep = cep.replace(/\D/g, '')
+      cpf_cnpj = cpf_cnpj.replace(/\D/g, '');
+      cep = cep.replace(/\D/g, '');
 
       await User.update(user.id, {
         name,
@@ -40,8 +40,6 @@ module.exports = {
         user: req.body,
         success: 'Conta atualizada com sucesso!',
       });
-
-      
     } catch (error) {
       console.error(error);
 
@@ -50,5 +48,22 @@ module.exports = {
       });
     }
   },
-  delete(req, res) {},
+  async delete(req, res) {
+    try {
+      await User.delete(req.body.id);
+      req.session.destroy();
+
+      return res.render('session/login', {
+        success: 'Conta deletada com sucesso!',
+      });
+
+    } catch (error) {
+      console.error(error);
+
+      return res.render('user/index', {
+        user: req.body,
+        error: 'Erro ao tentar deletar sua conta!',
+      });
+    }
+  },
 };

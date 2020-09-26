@@ -6,15 +6,19 @@ const File     = require("../models/File")
 
 module.exports = {
   create(req, res) {
-    Category.all()
-    .then(function (results) {
-      const categories = results.rows
+    try {
+      Category.all()
+      .then(function (results) {
+        const categories = results.rows
 
-      return res.render('products/create', { categories })
-      
-    }).catch(function (err) {
-      throw new Error(err)
-    })
+        return res.render('products/create', { categories })
+        
+      }).catch(function (err) {
+        throw new Error(err)
+      })
+    } catch (error) {
+      console.error(error)
+    }
   },
   async post(req, res) {
     try {
@@ -27,6 +31,9 @@ module.exports = {
       if (req.files.length == 0) return res.send("Please, send at least one image!")
 
       req.body.price = req.body.price.replace(/\D/g, "")//R$ 1,00 = 100
+
+
+      req.body.user_id = req.session.userId
 
       let results = await Product.create(req.body)
       const productId = results.rows[0].id

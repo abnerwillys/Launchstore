@@ -1,6 +1,9 @@
 const db = require('../../config/db');
 const { hash } = require('bcryptjs');
 
+const Product = require('./Product');
+const fs = require('fs');
+
 module.exports = {
   async findOne(filters) {
     try {
@@ -56,22 +59,56 @@ module.exports = {
     }
   },
   async update(id, fields) {
-    let query = `UPDATE users SET`;
+    try {
+      let query = `UPDATE users SET`;
 
-    Object.keys(fields).map((key, index, array) => {
-      if (index + 1 < array.length) {
-        query = `${query}
-          ${key} = '${fields[key]}',
-        `;
-      } else {
-        query = `${query}
-          ${key} = '${fields[key]}'
-          WHERE id = ${id}
-        `;
-      }
-    });
+      Object.keys(fields).map((key, index, array) => {
+        if (index + 1 < array.length) {
+          query = `${query}
+            ${key} = '${fields[key]}',
+          `;
+        } else {
+          query = `${query}
+            ${key} = '${fields[key]}'
+            WHERE id = ${id}
+          `;
+        }
+      });
 
-    await db.query(query);
-    return;
+      await db.query(query);
+      return;
+
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  async delete(id) {
+    try {
+      let results = await db.query('SELECT * FROM products WHERE user_id = $1',[id]);
+
+      const products = results.rows;
+
+      const allFilesPromise = products.map((product) =>
+        Product.files(product.id)
+      );
+
+      let promiseResults = await Promise.all(allFilesPromise);
+
+      await db.query(`DELETE FROM users WHERE id = $1`, [id]);
+
+      promiseResults.map((results) => {
+        results.rows.map((file) => {
+          try {
+            fs.unlinkSync(file.path)
+            
+          } catch (error) {
+            console.error(error)
+          }
+        });
+      });
+
+    } catch (error) {
+      console.error(error);
+    }
   },
 };
