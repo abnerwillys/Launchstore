@@ -1,120 +1,40 @@
-const { query } = require('../../config/db')
-const db = require('../../config/db')
+const Base = require('./Base')
+const db = require('../../config/db');
+
+Base.init({ table: 'products' })
 
 module.exports = {
-  all() {
-    const query = `
-      SELECT * FROM products
-      ORDER BY updated_at DESC
-    `
-    return db.query(query)
+  ...Base,
+  async files(id) {
+    const results = await db.query(`
+    SELECT * FROM files WHERE product_id = $1
+    `, [id])
+
+    return results.rows
   },
-  create(data) {
-    const query = `
-      INSERT INTO products (
-        category_id,
-        user_id,
-        name,
-        description,
-        old_price,
-        price,
-        quantity,
-        status
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      RETURNING id
-    `
+  async search({ filter, category }) {
 
-    const values = [
-      data.category_id,
-      data.user_id,
-      data.name,
-      data.description,
-      data.old_price || data.price,
-      data.price,
-      data.quantity,
-      data.status || 1,
-    ]
-
-    return db.query(query, values)
-  },
-  find(id) {
-    const query = `
-      SELECT * 
-      FROM products 
-      WHERE id = $1
-    `
-    return db.query(query, [id])
-  },
-  update(data) {
-    const query = `
-      UPDATE products SET
-        category_id=($1),
-        name=($2),
-        description=($3),
-        old_price=($4),
-        price=($5),
-        quantity=($6),
-        status=($7)
-      WHERE id = $8
-    `
-
-    const values = [
-      data.category_id,
-      data.name,
-      data.description,
-      data.old_price,
-      data.price,
-      data.quantity,
-      data.status,
-      data.id
-    ]
-
-    return db.query(query, values)
-  },
-  delete(id) {
-    const query = `
-      DELETE FROM products
-      WHERE id = $1
-    `
-    
-    return db.query(query, [id])
-  },
-  files(id) {
-    const query = `
-      SELECT * 
-      FROM files
-      WHERE product_id = $1
-    `
-
-    return db.query(query, [id])
-  },
-  search(params) {
-    const { filter, category } = params
-
-    let query = "",
-        filterQuery = `WHERE`
-
-    if (category) {
-      filterQuery = `${filterQuery}
-        products.category_id = ${category}
-        AND
-      `
-    }
-
-    filterQuery = `
-      ${filterQuery}
-      products.name ILIKE '%${filter}%'
-      OR products.description ILIKE '%${filter}%'
-    `
-
-    query = `
+    let query = `
       SELECT products.*,
       categories.name AS category_name
       FROM products
       LEFT JOIN categories ON (categories.id = products.category_id)
-      ${filterQuery}
+      WHERE 1 = 1
     `
 
-    return db.query(query)
+    if (category) {
+      query += ` AND products.category_id = ${category}`
+    }
+
+    if (filter) {
+      query += ` AND (products.name ILIKE '%${filter}%'
+        OR products.description ILIKE '%${filter}%')
+      `
+    }
+
+    query += ` AND status != 0`
+
+    const results = await db.query(query)
+    return results.rows
   }
 }

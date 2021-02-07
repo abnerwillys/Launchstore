@@ -1,13 +1,10 @@
 {% extends "layout.njk" %}
+{% import 'parts/card.njk' as cards %}
 
 {% block content %}
 
-  <section class="container form">
+  {% call cards.render('Editar produto', 'product-create container') %}
     <form method="POST" enctype="multipart/form-data" action="/products?_method=PUT">
-    
-      <div class="header">
-       <h3>Editar produto</h3>
-      </div>
 
       <div class="fields">
         {% include 'products/fields.njk' %}
@@ -30,7 +27,8 @@
       >
       <button class="button delete" type="submit">Delete</button>
     </form>
-  </section>
+  {% endcall %}
+
 {% endblock content %}
 
 {% block scripts %} 

@@ -1,13 +1,11 @@
 {% extends "layout.njk" %}
+{% import 'parts/card.njk' as cards %}
 
 {% block content %}
 
-  <section class="user-dashboard container form">
+  {% call cards.render('Detalhes', 'users-dashboard container') %}
+
     <form method="POST" action="/users?_method=PUT">
-    
-      <div class="header">
-       <h3>Detalhes</h3>
-      </div>
 
       <div class="fields">
         {% include 'user/fields.njk' %}
@@ -30,7 +28,8 @@
       >
       <button class="button delete" type="submit">Delete</button>
     </form>
-  </section>
+  {% endcall %}
+
 {% endblock content %}
 
 {% block scripts %} 

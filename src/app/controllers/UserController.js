@@ -1,4 +1,10 @@
+const { unlinkSync } = require('fs')
+const { hash } = require('bcryptjs')
+
 const User = require('../models/User');
+const Product = require('../models/Product');
+const LoadProductService = require('../services/LoadProductService')
+
 const { formatCpfCnpj, formatCep } = require('../../lib/useful');
 
 module.exports = {
@@ -6,19 +12,40 @@ module.exports = {
     return res.render('user/register');
   },
   async post(req, res) {
-    const userId = await User.create(req.body);
+    try {
+      let { name, email, password, cpf_cnpj, cep, address} = req.body
 
-    req.session.userId = userId;
+      password = await hash(password, 8);
+      cpf_cnpj = cpf_cnpj.replace(/\D/g, '')
+      cep = cep.replace(/\D/g, '')
 
-    return res.redirect('/users');
+      const userId = await User.create({
+        name,
+        email,
+        password,
+        cpf_cnpj,
+        cep,
+        address,
+      });
+
+      req.session.userId = userId;
+
+      return res.redirect('/users');
+    } catch (error) {
+      console.error(error)
+    }
   },
   async show(req, res) {
-    const { user } = req;
+    try {
+      const { user } = req;
 
-    user.cpf_cnpj = formatCpfCnpj(user.cpf_cnpj);
-    user.cep = formatCep(user.cep);
+      user.cpf_cnpj = formatCpfCnpj(user.cpf_cnpj);
+      user.cep = formatCep(user.cep);
 
-    return res.render('user/index', { user });
+      return res.render('user/index', { user });
+    } catch (error) {
+      console.error(error)
+    }
   },
   async update(req, res) {
     try {
@@ -50,8 +77,30 @@ module.exports = {
   },
   async delete(req, res) {
     try {
+      const products = await Product.findAll({ where: { user_id: req.body.id }})
+
+      // get all images of products
+      const allFilesPromise = products.map((product) =>
+        Product.files(product.id)
+      );
+
+      let promiseResults = await Promise.all(allFilesPromise);
+
+      // run deletion of user
       await User.delete(req.body.id);
       req.session.destroy();
+
+      // remove images of public images
+      promiseResults.map((files) => {
+        files.map((file) => {
+          try {
+            unlinkSync(file.path)
+            
+          } catch (error) {
+            console.error(error)
+          }
+        });
+      });
 
       return res.render('session/login', {
         success: 'Conta deletada com sucesso!',
@@ -66,4 +115,11 @@ module.exports = {
       });
     }
   },
+  async ads(req, res) {
+    const products = await LoadProductService.load('products', {
+      where: { user_id: req.session.userId }
+    })
+
+    return res.render('user/ads', { products })
+  }
 };
