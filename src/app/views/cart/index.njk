@@ -6,7 +6,7 @@
   {% if (cart.items) and (cart.items.length < 1) %}
 
     {% call cards.render('', 'cart-empty container') %}
-      <div class="cart-lottie"></div>
+      <div class="cart lottie"></div>
       <p>Seu carrinho está vazio</p>
       <a href="/products/search" class="button">Comprar agora</a>
     {% endcall %}
@@ -85,7 +85,7 @@
 {% block scripts %} 
   <script src="/lottie/lottie.min.js"></script>
   <script>
-    const element = document.querySelector('.cart-lottie')
+    const element = document.querySelector('.cart.lottie')
 
     lottie.loadAnimation({
       container: element,

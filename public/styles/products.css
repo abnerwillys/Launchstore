@@ -78,6 +78,8 @@
   height: 90%;
 
   object-fit: contain;
+
+  border-radius: 8px;
 }
 
 .product-single .highlight a.lightbox-close {
@@ -96,6 +98,7 @@
   justify-content: center;
 
   transition: 0.4s;
+  border-radius: 8px;
 }
 
 

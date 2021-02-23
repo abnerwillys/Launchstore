@@ -31,7 +31,8 @@
 }
 
 .cart .item:hover {
-  background-color: rgba(0, 0, 0, .02);
+  /* background-color: rgba(0, 0, 0, .02); */
+  background-color: var(--color-border-in-white);
 }
 
 .cart .item > a {
@@ -141,10 +142,6 @@
 .cart-empty .button {
   width: 240px;
   margin: 16px auto;
-}
-
-.cart-empty .cart-lottie {
-  height: 300px;
 }
 
 /* Menu */

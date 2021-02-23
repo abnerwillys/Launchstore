@@ -3,7 +3,7 @@
 
 {% block content %}
   {% call cards.render('', 'order-success container') %}
-    <div class="success-lottie"></div>
+    <div class="success lottie"></div>
     <h2>Pedido Realizado com Sucesso</h2>
     <p>Aguarde a resposta do vendedor no seu email cadastrado.</p>
     <a href="/products/search">Comprar mais</a>
@@ -13,7 +13,7 @@
 {% block scripts %} 
   <script src="/lottie/lottie.min.js"></script>
   <script>
-    const element = document.querySelector('.success-lottie')
+    const element = document.querySelector('.success.lottie')
 
     lottie.loadAnimation({
       container: element,

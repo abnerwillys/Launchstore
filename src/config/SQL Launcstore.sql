@@ -120,7 +120,6 @@ ALTER SEQUENCE users_id_seq RESTART WITH 1;
 ALTER SEQUENCE files_id_seq RESTART WITH 1;
 
 -- Create orders(pedidos)
-
 CREATE TABLE "orders" (
 	"id" SERIAL PRIMARY KEY,
   "seller_id" int NOT NULL,
@@ -142,3 +141,25 @@ CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON orders
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
+
+
+-- SOFT DELETE
+-- 1. Criar uma coluna na table products chamada "deleted_at" com valor padrão null. Ela apenas terá
+-- conteúdo quando o produto por deletado.
+ALTER TABLE products ADD COLUMN "deleted_at" timestamp
+
+-- 2. Criar uma regra(RULE) que vai rodar todas as vezes que solicitarmos o DELETE
+CREATE OR REPLACE RULE delete_product AS
+ON DELETE TO products DO INSTEAD
+UPDATE products
+SET deleted_at = now()
+WHERE products.id = old.id;
+
+-- 3. Criar uma VIEW onde vamos puxar somente os dados que estão ativos. Essa VIEW é uma tabela virtual que é
+-- feita em cima de uma "real" com alguma query. No final o sistema vai puxar dessa VIEW em vez da TABLE original
+CREATE VIEW products_without_deleted AS
+SELECT * FROM products WHERE deleted_at IS NULL;
+
+-- 4. Renomear a nossa VIEW e nossa TABLE para diminuir o impacto da mudança no sistema
+ALTER TABLE products RENAME TO products_with_deleted;
+ALTER TABLE products_without_deleted RENAME TO products;

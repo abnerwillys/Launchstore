@@ -1,0 +1,11 @@
+.container div.lottie {
+  height: 300px;
+}
+
+.container.order-success div.success.lottie {
+  height: 200px;
+}
+
+.container.order-error div.error.lottie {
+  height: 250px;
+}

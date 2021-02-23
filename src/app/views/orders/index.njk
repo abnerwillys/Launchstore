@@ -1,0 +1,70 @@
+{% extends "layout.njk" %}
+{% import 'parts/card.njk' as cards %}
+
+{% block content %}
+
+  {% if (orders.length < 1) %}
+
+    {% call cards.render('', 'orders-empty container') %}
+      <div class="orders lottie"></div>
+      <p>Nenhum Pedido</p>
+      <a href="/products/search" class="button">Comprar agora</a>
+    {% endcall %}
+
+  {% else %}
+
+    {% call cards.render('Meus Pedidos', 'orders container') %}
+      <div class="items">
+        {% for order in orders %}
+          <div class="item-container">
+            <div class="item">
+              <img src="{{order.product.img}}" alt="Imagem do Produto {{order.product.name}}" title="Imagem do Produto {{order.product.name}}">
+              <div>
+                <div class="title">{{order.product.name}}</div>
+                <div class="price">{{order.formattedPrice}}</div>
+                <div class="updated-at">{{order.formattedUpdatedAt}}</div>
+              </div>
+            </div>
+
+            <div class="quantity">
+              Qtd. {{order.quantity}}
+            </div>
+
+            <div class="total">
+              {{order.formattedTotal}}
+            </div>
+
+            <div class="status {{order.status}}">
+              {{order.formattedStatus}}
+            </div>
+
+            <div class="actions dropdown-container">
+              Ações <i class="material-icons">arrow_drop_down</i>
+              <ul class="dropdown">
+                <li><a href="/orders/{{order.id}}">Ver Pedido</a></li>
+                <li><a href="/products/{{order.product.id}}">Detalhes do Produto</a></li>
+              </ul>
+            </div>
+          </div>          
+        {% endfor %}
+      </div>
+    {% endcall %}
+
+  {% endif %}
+
+{% endblock content %}
+
+{% block scripts %} 
+  <script src="/lottie/lottie.min.js"></script>
+  <script>
+    const element = document.querySelector('.orders.lottie')
+
+    lottie.loadAnimation({
+      container: element,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: '/lottie/42614-cart-loading.json'
+    }).setSpeed(1)
+  </script>
+{% endblock  %}
