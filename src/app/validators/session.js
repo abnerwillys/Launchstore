@@ -54,9 +54,6 @@ module.exports = {
       
       const user = await User.findOne({ where: { email } });
 
-      console.log(token)
-      console.log(user.reset_token)
-
       if (!user) {
         return res.render('session/password-reset', {
           token,
@@ -64,6 +61,9 @@ module.exports = {
           error: 'Usuário não cadastrado!',
         });
       }
+
+      console.log(token)
+      console.log(user.reset_token)
 
       if (password != passwordRepeat) {
         return res.render('session/password-reset', {
