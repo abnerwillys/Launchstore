@@ -226,7 +226,7 @@ $ cd Launchstore
 
 # Criar banco de dados utilizando o arquivo Launcstore.sql
 
-# Executar seeds.js para criar primeiro usuário
+# Executar seeds.js para popular o banco
 $ node src/config/seeds.js
 
 # Instalar dependências
@@ -239,7 +239,7 @@ $ yarn start
   - manualmente pela porta: http://localhost:5000/
   - automaticamente (abre assim que iniciar o server) pelo browsersync: http://localhost:3000/
 
-# Usuário criado através da seed, para poder logar no sistema:
+# Como logar no sistema:
   - email: pegar email atraves da tabela "users" no banco que foi criado;
   - senha: 12345
 
